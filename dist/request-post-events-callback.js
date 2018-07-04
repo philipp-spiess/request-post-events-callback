@@ -1,2 +1,2 @@
-"function"==typeof window.setImmediate&&/\[native code\]/.test(window.setImmediate.toString())?(exports.requestPostEventsCallback=window.setImmediate,exports.cancelPostEventsCallback=window.clearImmediate):(exports.requestPostEventsCallback=requestAnimationFrame.bind(void 0),exports.cancelPostEventsCallback=cancelAnimationFrame.bind(void 0));
+"function"==typeof window.setImmediate&&/\[native code\]/.test(window.setImmediate.toString())?(exports.requestPostEventsCallback=window.setImmediate.bind(window),exports.cancelPostEventsCallback=window.clearImmediate.bind(window)):(exports.requestPostEventsCallback=requestAnimationFrame.bind(window),exports.cancelPostEventsCallback=cancelAnimationFrame.bind(window));
 //# sourceMappingURL=request-post-events-callback.js.map
