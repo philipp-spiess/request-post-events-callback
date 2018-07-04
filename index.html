@@ -3,36 +3,69 @@
   <head>
     <meta charset="UTF-8">
     <title>request-post-events-callback</title>
+
+    <style>
+      #layer {
+        display: inline-block;
+      }
+    </style>
   </head>
   <body>
-    <button id="button">
-      Click me
-    </button>
+    <div id="layer">
+      <button id="button">
+        Click me
+      </button>
+    </div>
     <div id="log"></div>
 
     <script>
-      document.addEventListener('click', () => {
-        appendLog('document capture');
-
-        document.body.style.background = 'red';
-
-        requestAnimationFrame(() => {
-          appendLog('rAF in');
-          sleep(3000);
-          appendLog('rAF out');
-        });
-      }, true);
-
-      document.addEventListener('click', () => appendLog('document bubble'));
+      // We start by registering a couple of event handlers which we want to see
+      // before the postEventCallback. We enqueue the callback in the event
+      // listener we expect to fire first (layer capture) but it must work
+      // on any level.
+      layer.addEventListener('click', () => appendLog('layer capture') || registerPostEventCallback(), true);
+      layer.addEventListener('click', () => appendLog('layer bubble'));
       button.addEventListener('click', () => appendLog('button capture'), true);
       button.addEventListener('click', () => appendLog('button bubble'));
 
+      // To visualize the effect, we synchronously change a visible part of the
+      // UI (the background color) and then cause a delay in the
+      // postEventCallback. We do not expect the visible effect to be visible
+      // since we clear it out when postEventCallback is fired. We also expect
+      // all event listeners to fire in the mean time.
+      var isRunFirstTime = true;
+      function registerPostEventCallback() {
+        document.body.style.background = 'red';
+        requestAnimationFrame(() => {
+          appendLog('rPEC in');
+
+          sleep(1000);
+
+          if (isRunFirstTime) {
+            var wasSuccessful = eventLog.length === 5;
+            button.innerText = button.innerText + ' ' + (wasSuccessful ? '✅' : '❌');
+            isRunFirstTime = false;
+          }
+
+          document.body.style.background = 'transparent';
+          appendLog('rPEC out');
+        });
+      }
+
+      // To make it visible wether we are run before the next render phase or
+      // afterwards, we need a way to pause the execution. To do this, we
+      // implement a naïve sleep function.
       function sleep(ms) {
         var start = Date.now();
         while (Date.now() < start + ms) {}
       }
 
+      // We want our changes to be visible in the UI and accessible in our
+      // registerPostEventCallback and thus append the log to a DOM element as
+      // well as an array.
+      var eventLog = []
       function appendLog(text) {
+        eventLog.push(text);
         var el = document.createElement('p');
         el.innerText = text;
         log.appendChild(el);
@@ -40,5 +73,3 @@
     </script>
   </body>
 </html>
-
-
