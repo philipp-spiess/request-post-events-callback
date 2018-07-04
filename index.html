@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>request-post-events-callback</title>
+  </head>
+  <body>
+    <button id="button">
+      Click me
+    </button>
+    <div id="log"></div>
+
+    <script>
+      document.addEventListener('click', () => {
+        appendLog('document capture');
+
+        document.body.style.background = 'red';
+
+        requestAnimationFrame(() => {
+          appendLog('rAF in');
+          sleep(3000);
+          appendLog('rAF out');
+        });
+      }, true);
+
+      document.addEventListener('click', () => appendLog('document bubble'));
+      button.addEventListener('click', () => appendLog('button capture'), true);
+      button.addEventListener('click', () => appendLog('button bubble'));
+
+      function sleep(ms) {
+        var start = Date.now();
+        while (Date.now() < start + ms) {}
+      }
+
+      function appendLog(text) {
+        var el = document.createElement('p');
+        el.innerText = text;
+        log.appendChild(el);
+      }
+    </script>
+  </body>
+</html>
+
+
