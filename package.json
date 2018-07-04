@@ -2,8 +2,16 @@
   "name": "request-post-events-callback",
   "version": "0.0.1",
   "description": "Request a callback after all event listeners but before the next pain.",
-  "main": "index.js",
+  "main": "dist/request-post-events-callback.js",
+  "source": "index.js",
   "repository": "https://github.com/philipp-spiess/request-post-events-callback",
   "author": "Philipp Spiess <hello@philippspiess.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "microbundle": "^0.4.4"
+  },
+  "scripts": {
+    "build": "microbundle --name PostEventsCallback",
+    "dev": "microbundle watch --name PostEventsCallback"
+  }
 }

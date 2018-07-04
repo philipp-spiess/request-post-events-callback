@@ -18,6 +18,7 @@
     </div>
     <div id="log"></div>
 
+    <script src="dist/request-post-events-callback.umd.js"></script>
     <script>
       // We start by registering a couple of event handlers which we want to see
       // before the postEventCallback. We enqueue the callback in the event
@@ -25,7 +26,7 @@
       // on any level.
       layer.addEventListener("click", function() {
         appendLog("layer capture");
-        registerPostEventCallback();
+        registerPostEventsCallback();
       }, true);
       layer.addEventListener("click", function() {
         appendLog("layer bubble");
@@ -43,9 +44,9 @@
       // since we clear it out when postEventCallback is fired. We also expect
       // all event listeners to fire in the mean time.
       var isRunFirstTime = true;
-      function registerPostEventCallback() {
+      function registerPostEventsCallback() {
         document.body.style.background = "red";
-        requestAnimationFrame(function() {
+        PostEventsCallback.requestPostEventsCallback(function() {
           appendLog("rPEC in");
 
           sleep(1000);
@@ -71,7 +72,7 @@
       }
 
       // We want our changes to be visible in the UI and accessible in our
-      // registerPostEventCallback and thus append the log to a DOM element as
+      // registerPostEventsCallback and thus append the log to a DOM element as
       // well as an array.
       var eventLog = [];
       function appendLog(text) {
