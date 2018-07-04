@@ -23,10 +23,19 @@
       // before the postEventCallback. We enqueue the callback in the event
       // listener we expect to fire first (layer capture) but it must work
       // on any level.
-      layer.addEventListener('click', () => appendLog('layer capture') || registerPostEventCallback(), true);
-      layer.addEventListener('click', () => appendLog('layer bubble'));
-      button.addEventListener('click', () => appendLog('button capture'), true);
-      button.addEventListener('click', () => appendLog('button bubble'));
+      layer.addEventListener("click", function() {
+        appendLog("layer capture");
+        registerPostEventCallback();
+      }, true);
+      layer.addEventListener("click", function() {
+        appendLog("layer bubble");
+      });
+      button.addEventListener("click", function() {
+        appendLog("button capture");
+      }, true);
+      button.addEventListener("click", function() {
+        appendLog("button bubble");
+      });
 
       // To visualize the effect, we synchronously change a visible part of the
       // UI (the background color) and then cause a delay in the
@@ -35,20 +44,21 @@
       // all event listeners to fire in the mean time.
       var isRunFirstTime = true;
       function registerPostEventCallback() {
-        document.body.style.background = 'red';
-        requestAnimationFrame(() => {
-          appendLog('rPEC in');
+        document.body.style.background = "red";
+        requestAnimationFrame(function() {
+          appendLog("rPEC in");
 
           sleep(1000);
 
           if (isRunFirstTime) {
             var wasSuccessful = eventLog.length === 5;
-            button.innerText = button.innerText + ' ' + (wasSuccessful ? '✅' : '❌');
+            button.innerText =
+              button.innerText + " " + (wasSuccessful ? "✅" : "❌");
             isRunFirstTime = false;
           }
 
-          document.body.style.background = 'transparent';
-          appendLog('rPEC out');
+          document.body.style.background = "transparent";
+          appendLog("rPEC out");
         });
       }
 
@@ -63,10 +73,10 @@
       // We want our changes to be visible in the UI and accessible in our
       // registerPostEventCallback and thus append the log to a DOM element as
       // well as an array.
-      var eventLog = []
+      var eventLog = [];
       function appendLog(text) {
         eventLog.push(text);
-        var el = document.createElement('p');
+        var el = document.createElement("p");
         el.innerText = text;
         log.appendChild(el);
       }
